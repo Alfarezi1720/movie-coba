@@ -1,44 +1,28 @@
+// authReducers.js
+
+import { createSlice } from '@reduxjs/toolkit'
+
 const initialState = {
   token: localStorage.getItem('token') || null,
   isLoggedIn: !!localStorage.getItem('token'),
   user: null,
 }
 
-export const setToken = (token) => ({
-  type: 'SET_TOKEN',
-  payload: token,
+const authSlice = createSlice({
+  name: 'auth',
+  initialState,
+  reducers: {
+    setToken: (state, action) => {
+      state.token = action.payload
+    },
+    setIsLoggedIn: (state, action) => {
+      state.isLoggedIn = action.payload
+    },
+    setUser: (state, action) => {
+      state.user = action.payload
+    },
+  },
 })
 
-export const setIsLoggedIn = (isLoggedIn) => ({
-  type: 'SET_IS_LOGGED_IN',
-  payload: isLoggedIn,
-})
-
-export const setUser = (user) => ({
-  type: 'SET_USER',
-  payload: user,
-})
-
-const authReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case 'SET_TOKEN':
-      return {
-        ...state,
-        token: action.payload,
-      }
-    case 'SET_IS_LOGGED_IN':
-      return {
-        ...state,
-        isLoggedIn: action.payload,
-      }
-    case 'SET_USER':
-      return {
-        ...state,
-        user: action.payload,
-      }
-    default:
-      return state
-  }
-}
-
-export default authReducer
+export const { setToken, setIsLoggedIn, setUser } = authSlice.actions
+export default authSlice.reducer

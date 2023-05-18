@@ -62,3 +62,9 @@ export const setUser = (user) => ({
   type: 'SET_USER',
   payload: user,
 })
+
+const authReducer = (state = initialState, action) => {
+  // ...
+}
+
+export default authReducer

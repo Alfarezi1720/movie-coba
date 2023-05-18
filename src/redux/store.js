@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
 import thunk from 'redux-thunk'
-import rootReducers from './reducers'
+import authReducers from './authReducers' // Ubah nama file menjadi authReducers.js
 
 // Create the store
 export default configureStore({
-  reducer: rootReducers,
+  reducer: authReducers, // Ubah nama reducer menjadi authReducers
   devTools: process.env.NODE_ENV === 'development',
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk), // It not necessary if your feature is not too complex, you can just comment this line if you don't need it
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
 })

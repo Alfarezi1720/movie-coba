@@ -5,17 +5,12 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import { loginWithGoogle } from '../redux/actions/authActions'
-import { configureStore } from '@reduxjs/toolkit'
-import authReducer from '../redux/reducer/authReducers'
-
-const store = configureStore({
-  reducer: authReducer,
-})
+import store from '../redux/store'
 
 function GoogleLogin({ children }) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const token = useSelector((state) => state.token)
+  const token = useSelector((state) => state.auth.token)
 
   const registerLoginWithGoogleAction = async () => {
     try {
