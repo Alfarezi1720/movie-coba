@@ -1,37 +1,25 @@
 import React from 'react'
+import { useSelector, useDispatch, Provider } from 'react-redux'
 import { useGoogleLogin } from '@react-oauth/google'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
-import { parseJwt } from '../utils'
+import { loginWithGoogle } from '../redux/actions/authActions'
+import { configureStore } from '@reduxjs/toolkit'
+import authReducer from '../redux/reducer/authReducers'
+
+const store = configureStore({
+  reducer: authReducer,
+})
 
 function GoogleLogin({ children }) {
+  const dispatch = useDispatch()
   const navigate = useNavigate()
-  const registerLoginWithGoogleAction = async (accessToken) => {
+  const token = useSelector((state) => state.token)
+
+  const registerLoginWithGoogleAction = async () => {
     try {
-      let data = JSON.stringify({
-        access_token: accessToken,
-      })
-
-      let config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: `${import.meta.env.VITE_API_URL}/v1/auth/google`,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        data: data,
-      }
-
-      const response = await axios.request(config)
-      const { token } = response.data.data
-      const { name } = parseJwt(token)
-
-      localStorage.setItem('token', token)
-
-      toast.success(`Welcome! ${name}`)
-
-      navigate('/')
+      dispatch(loginWithGoogle(token))
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(error.response.data.message)
@@ -41,16 +29,18 @@ function GoogleLogin({ children }) {
     }
   }
 
-  const loginWithGoogle = useGoogleLogin({
+  const handleGoogleLogin = useGoogleLogin({
     onSuccess: (responseGoogle) => {
       registerLoginWithGoogleAction(responseGoogle.access_token)
     },
   })
 
   return (
-    <button style={styleBtn} onClick={() => loginWithGoogle()}>
-      {children}
-    </button>
+    <Provider store={store}>
+      <button style={styleBtn} onClick={handleGoogleLogin}>
+        {children}
+      </button>
+    </Provider>
   )
 }
 
