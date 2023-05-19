@@ -2,15 +2,17 @@ import axios from 'axios'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { connect } from 'react-redux'
 import { loginSchema } from '../../utils/schema'
 import { AuthLayout } from '../../components/Layout'
 import GoogleLogin from '../../components/GoogleLogin'
 import googleIcon from '../../assets/images/google.png'
+import { loginAction } from '../../redux/actions/authActions' // Import action creator for login
 
 import styles from './index.module.css'
 import { parseJwt } from '../../utils'
 
-export default function Login() {
+function Login({ login }) {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: '',
@@ -67,6 +69,9 @@ export default function Login() {
 
       localStorage.setItem('token', token)
       toast.success(`Welcome back! ${name}`)
+
+      // Call the login action
+      login(token)
 
       navigate('/')
     } catch (error) {
@@ -147,10 +152,19 @@ export default function Login() {
             Sign In
           </button>
         </form>
-        <p style={{textAlign: 'center', marginTop: '8px'}}>
-          Don't have account? <Link style={{textDecoration: 'none', fontWeight: '600'}} to='/register'>Sign Up</Link>
+        <p style={{ textAlign: 'center', marginTop: '8px' }}>
+          Don't have an account?{' '}
+          <Link
+            style={{ textDecoration: 'none', fontWeight: '600' }}
+            to='/register'
+          >
+            Sign Up
+          </Link>
         </p>
       </div>
     </AuthLayout>
   )
 }
+
+// Connect the component to Redux store
+export default connect(null, { login: loginAction })(Login)

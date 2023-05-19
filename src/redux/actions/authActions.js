@@ -6,19 +6,19 @@ import {
   setToken as setTokenAction,
   setIsLoggedIn as setIsLoggedInAction,
   setUser as setUserAction,
-} from '../reducer/authReducers'
+} from '../reducers/authReducers'
 import { useDispatch } from 'react-redux'
 
-export const loginWithGoogle = (accessToken) => async (dispatch) => {
+export const loginAction = (formData) => async (dispatch) => {
   try {
-    let data = JSON.stringify({
-      access_token: accessToken,
-    })
+    let data = {
+      email: formData.email,
+      password: formData.password,
+    }
 
     let config = {
       method: 'post',
-      maxBodyLength: Infinity,
-      url: `${import.meta.env.VITE_API_URL}/v1/auth/google`,
+      url: `${import.meta.env.VITE_API_URL}/v1/auth/login`,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -31,7 +31,7 @@ export const loginWithGoogle = (accessToken) => async (dispatch) => {
 
     localStorage.setItem('token', token)
 
-    toast.success(`Welcome! ${name}`)
+    toast.success(`Welcome back! ${name}`)
 
     dispatch(setTokenAction(token))
     dispatch(setIsLoggedInAction(true))
@@ -62,9 +62,3 @@ export const setUser = (user) => ({
   type: 'SET_USER',
   payload: user,
 })
-
-const authReducer = (state = initialState, action) => {
-  // ...
-}
-
-export default authReducer

@@ -4,17 +4,17 @@ import { useGoogleLogin } from '@react-oauth/google'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
-import { loginWithGoogle } from '../redux/actions/authActions'
+import { loginAction } from '../redux/actions/authActions'
 import store from '../redux/store'
 
-function GoogleLogin({ children }) {
+const GoogleLogin = ({ accessToken, children }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const token = useSelector((state) => state.auth.token)
 
   const registerLoginWithGoogleAction = async () => {
     try {
-      dispatch(loginWithGoogle(token))
+      await dispatch(loginAction({ access_token: accessToken || token }))
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(error.response.data.message)
